@@ -22,7 +22,7 @@ class User(Base):
     password: Mapped[str] = MappedColumn(String(100), nullable=False)
 
     events: Mapped[list["Event"]] = relationship("Event", back_populates="organizer")
-    event_participants: Mapped[list["EventParticipant"]] = relationship("EventParticipants", back_populates="user")
+    event_participants: Mapped[list["EventParticipant"]] = relationship("EventParticipant", back_populates="user")
 
 
 class Event(Base):
@@ -38,7 +38,7 @@ class Event(Base):
     created_at: Mapped[datetime] = MappedColumn(TIMESTAMP, server_default=func.now())
 
     organizer: Mapped["User"] = relationship("User", back_populates="events")
-    participants: Mapped[list["EventParticipant"]] = relationship("EventParticipants", back_populates="event")
+    participants: Mapped[list["EventParticipant"]] = relationship("EventParticipant", back_populates="event")
     notifications: Mapped[list["Notification"]] = relationship("Notification", back_populates="event")
     bots: Mapped[list["Bot"]] = relationship("Bot", back_populates="event")
 
