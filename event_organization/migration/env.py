@@ -13,7 +13,7 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from event_organization.config import settings
 from event_organization.database import Base
-from event_organization.db.models import User
+from event_organization.db.models import User, Event, EventParticipant, Notification, Bot
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
