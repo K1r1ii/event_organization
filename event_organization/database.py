@@ -3,7 +3,7 @@ from typing import Dict
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from config import settings
+from event_organization.config import settings
 
 engine = create_engine(url=settings.get_db_url, echo=False, pool_size=5, max_overflow=10)
 SessionFactory = sessionmaker(engine)

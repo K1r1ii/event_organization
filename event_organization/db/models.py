@@ -1,10 +1,8 @@
 import uuid
 from datetime import datetime
-from enum import unique
 from typing import Annotated
 
-from sqlalchemy import String, ForeignKey, UUID, func, Text, nulls_last
-from sqlalchemy.dialects.mssql import TIMESTAMP
+from sqlalchemy import String, ForeignKey, UUID, Text, DateTime
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from event_organization.database import Base
@@ -32,10 +30,9 @@ class Event(Base):
     name: Mapped[str] = MappedColumn(String(150), nullable=False)
     organizer_id: Mapped[int] = MappedColumn(ForeignKey("user.id"), nullable=False)
     description: Mapped[str] = MappedColumn(Text)
-    start_time: Mapped[datetime] = MappedColumn(TIMESTAMP, nullable=False)
-    end_time: Mapped[datetime] = MappedColumn(TIMESTAMP, nullable=False)
-    location: Mapped[str] = MappedColumn(String(200), nullable=False)
-    created_at: Mapped[datetime] = MappedColumn(TIMESTAMP, server_default=func.now())
+    start_time: Mapped[datetime] = MappedColumn(DateTime, nullable=False)
+    end_time: Mapped[datetime] = MappedColumn(DateTime, nullable=False)
+    location: Mapped[str | None] = MappedColumn(String(200), nullable=True)
 
     organizer: Mapped["User"] = relationship("User", back_populates="events")
     participants: Mapped[list["EventParticipant"]] = relationship("EventParticipant", back_populates="event")
@@ -49,7 +46,7 @@ class EventParticipant(Base):
     id: Mapped[id]
     event_id: Mapped[int] = MappedColumn(ForeignKey("event.id"), nullable=False)
     user_id: Mapped[int] = MappedColumn(ForeignKey("user.id"), nullable=False)
-    joined_at: Mapped[datetime] = MappedColumn(TIMESTAMP, server_default=func.now())
+    joined_at: Mapped[datetime] = MappedColumn(DateTime, nullable=False)
 
     event: Mapped["Event"] = relationship("Event", back_populates="participants")
     user: Mapped["User"] = relationship("User", back_populates="event_participants")
@@ -62,7 +59,8 @@ class Notification(Base):
     id: Mapped[id]
     event_id: Mapped[int] = MappedColumn(ForeignKey("event.id"), nullable=False)
     message: Mapped[str] = MappedColumn(Text, nullable=False)
-    send_time: Mapped[datetime] = MappedColumn(TIMESTAMP, server_default=func.now())
+    send_time: Mapped[datetime] = MappedColumn(DateTime, nullable=False)
+    image_url: Mapped[str | None] = MappedColumn(String(200), nullable=True)
 
     event: Mapped["Event"] = relationship("Event", back_populates="notifications")
 
@@ -78,5 +76,3 @@ class Bot(Base):
     instructions: Mapped[str] = MappedColumn(Text, nullable=False)
 
     event: Mapped["Event"] = relationship("Event", back_populates="bots")
-
-
